@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Voice Keyboard</string>
+    <string name="app_name" translatable="false">My Voice Keyboard</string>
     <string name="status_idle">Tap mic to record</string>
     <string name="status_recording">Recording\u2026</string>
     <string name="status_transcribing">Transcribing\u2026</string>
