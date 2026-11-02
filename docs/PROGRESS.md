@@ -1,6 +1,7 @@
 # Progress
 
 ## Done
+- 2026-11-02: language key with AUTO (`auto, en, ja, zh, yue`); Groq accepts `yue` (Cantonese), checked on phone.
 - Phase 0 (PC side): forked to Matthew-ms/voice-keyboard, cloned, `upstream` remote added, app builds, 439/444 upstream tests pass (see Known issues), app renamed to "My Voice Keyboard" (`com.tyraen.voicekeyboard.mine`) so it installs beside the original.
 
 - Phase 0 (phone side) ✅ 2026-11-02: installed on Galaxy S24+ (SM-S9260, Android 16) over USB, keyboard enabled, mic granted, Groq key set for speech + post-processing, dictation works.
@@ -8,7 +9,6 @@
 - Phase 1 ✅ 2026-11-02: codebase tour written to `docs/ARCHITECTURE-NOTES.md`.
 
 ## Next
-- Check Groq accepts `yue` (Cantonese). If it errors, drop it from the language list and use zh / AUTO.
 - Phase 2 (plan approved 2026-11-02), 5 steps: ✅ 1 diff + tests · ✅ 2 JSON storage + tests · ✅ 3 keep raw text for last dictation (checked on phone via log) · ✅ 4 Learning screen (switch, list, delete all; checked on phone) · 5 Fix button + panel.
 - Collect "before" accuracy examples (what was said vs. typed, per language) to compare against later.
 
