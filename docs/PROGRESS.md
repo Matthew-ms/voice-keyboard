@@ -3,9 +3,11 @@
 ## Done
 - Phase 0 (PC side): forked to Matthew-ms/voice-keyboard, cloned, `upstream` remote added, app builds, 439/444 upstream tests pass (see Known issues), app renamed to "My Voice Keyboard" (`com.tyraen.voicekeyboard.mine`) so it installs beside the original.
 
+- Phase 0 (phone side) ✅ 2026-11-02: installed on Galaxy S24+ (SM-S9260, Android 16) over USB, keyboard enabled, mic granted, Groq key set for speech + post-processing, dictation works.
+
 ## Next
-- Phase 0 (phone side): USB debugging on the Galaxy S24+, install, enable keyboard, add Groq key, test dictation (English, Japanese, mixed).
 - Phase 1: codebase tour + `docs/ARCHITECTURE-NOTES.md`.
+- Collect "before" accuracy examples (what was said vs. typed, per language) to compare against later.
 
 ## Open questions for later phases
 - Phase 2: store corrections in a JSON file instead of Room? (No Room in the project today.)
