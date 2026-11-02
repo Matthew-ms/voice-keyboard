@@ -16,6 +16,7 @@
 - Confirm: Gboard stays the typing keyboard, this one is for voice only.
 
 ## Known issues
+- Speech came out in Japanese for English speech (2026-11-02). Cause: the Whisper "Prompt (formatting hint)" was upstream's Japanese example sentence (interface language is Japanese), and with Dictation Languages empty Whisper follows the prompt's language. Fix: a custom prompt mixing all four languages, or an empty prompt. `TranscriptionLocale.promptFor` keeps a built-in prompt when no language is set.
 - 5 upstream tests in `HallucinationFilterTest` fail on this PC. Cause: we test on Java 21, upstream CI uses Java 17, and Java 19+ changed regex `\b` to only treat English letters as word letters, so Russian patterns like `\bсубтитр` stop matching. Tests-only: Android uses its own regex engine, so the app on the phone is unaffected. Fix if needed: install JDK 17 and build with it.
 - Some screens still say "Voice Keyboard" (upstream hard-codes it in a few strings). Cosmetic; left alone to keep upstream merges clean.
 - Leave the in-app "check for updates" off: it would offer the original app's releases.
