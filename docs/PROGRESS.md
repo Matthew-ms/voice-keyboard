@@ -5,12 +5,14 @@
 
 - Phase 0 (phone side) ✅ 2026-11-02: installed on Galaxy S24+ (SM-S9260, Android 16) over USB, keyboard enabled, mic granted, Groq key set for speech + post-processing, dictation works.
 
+- Phase 1 ✅ 2026-11-02: codebase tour written to `docs/ARCHITECTURE-NOTES.md`.
+
 ## Next
-- Phase 1: codebase tour + `docs/ARCHITECTURE-NOTES.md`.
+- Phase 2: Fix panel + storage. Short plan first, for approval.
 - Collect "before" accuracy examples (what was said vs. typed, per language) to compare against later.
 
 ## Open questions for later phases
-- Phase 2: store corrections in a JSON file instead of Room? (No Room in the project today.)
+- Phase 2: store corrections in a JSON file instead of Room? (Upstream already stores its own data as org.json files; no Room in the project.)
 - Confirm: Gboard stays the typing keyboard, this one is for voice only.
 
 ## Known issues
