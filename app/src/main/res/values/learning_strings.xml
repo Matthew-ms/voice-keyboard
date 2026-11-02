@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Personal-fork feature: English only, so upstream's translation test is unaffected. -->
+<resources>
+    <string name="learning_title" translatable="false">Learning</string>
+    <string name="learning_open" translatable="false">Learning from corrections</string>
+    <string name="learning_enable" translatable="false">Learn from my corrections</string>
+    <string name="learning_enable_hint" translatable="false">Shows a Fix button after each dictation. Your corrections stay on this phone and are never in password or incognito fields.</string>
+    <string name="learning_list_title" translatable="false">Saved corrections (%1$d)</string>
+    <string name="learning_list_empty" translatable="false">No corrections yet. Turn on learning, dictate, then tap Fix on the keyboard.</string>
+    <string name="learning_missing_word" translatable="false">(missing)</string>
+    <string name="learning_speech_heard" translatable="false">Speech model heard: %1$s</string>
+    <string name="learning_delete_all" translatable="false">Delete all learning data</string>
+    <string name="learning_delete_confirm" translatable="false">Delete all %1$d saved corrections? This cannot be undone.</string>
+    <string name="learning_delete_done" translatable="false">All learning data deleted</string>
+    <string name="learning_delete" translatable="false">Delete</string>
+</resources>

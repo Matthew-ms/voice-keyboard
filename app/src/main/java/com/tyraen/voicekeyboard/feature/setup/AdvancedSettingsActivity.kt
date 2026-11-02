@@ -30,6 +30,9 @@ class AdvancedSettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_advanced_settings)
         options = AdvancedPreferences(this)
+        findViewById<Button>(R.id.btnLearning).setOnClickListener {
+            startActivity(Intent(this, com.tyraen.voicekeyboard.feature.learning.LearningActivity::class.java))
+        }
         findViewById<Switch>(R.id.switchQuickCorrection).apply {
             isChecked = options.quickCorrectionEnabled
             setOnCheckedChangeListener { _, enabled -> options.quickCorrectionEnabled = enabled }

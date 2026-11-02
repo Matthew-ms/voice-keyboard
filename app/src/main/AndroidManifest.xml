@@ -86,6 +86,11 @@
             android:exported="false"
             android:label="@string/vocabulary_title" />
 
+        <activity
+            android:name=".feature.learning.LearningActivity"
+            android:exported="false"
+            android:label="@string/learning_title" />
+
         <service
             android:name=".feature.ime.DictationInputMethod"
             android:exported="true"
