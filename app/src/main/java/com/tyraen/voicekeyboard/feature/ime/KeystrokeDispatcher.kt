@@ -10,14 +10,22 @@ import android.view.inputmethod.InputConnection
 
 class KeystrokeDispatcher(private val connectionProvider: () -> InputConnection?) {
 
+    /** True while typing into a box inside the keyboard's own window. */
+    var editsOwnBox: () -> Boolean = { false }
+
     private val handler = Handler(Looper.getMainLooper())
     private var repeatRunnable: Runnable? = null
 
     fun deleteBack() {
-        connectionProvider()?.let { ic ->
-            ic.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
-            ic.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL))
+        val ic = connectionProvider() ?: return
+        if (editsOwnBox()) {
+            // The keyboard window never has focus, so Android drops key presses aimed at its own boxes.
+            if (ic.getSelectedText(0).isNullOrEmpty()) ic.deleteSurroundingTextInCodePoints(1, 0)
+            else ic.commitText("", 1)
+            return
         }
+        ic.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
+        ic.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL))
     }
 
     private var backspaceInterval = BACKSPACE_INITIAL_INTERVAL

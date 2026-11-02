@@ -59,8 +59,8 @@ class FixDictationPanel(
         textSize = 16f
         setTextColor(ContextCompat.getColor(context, R.color.key_text))
         textDirection = View.TEXT_DIRECTION_FIRST_STRONG
-        // Tapping the box itself also brings up the keys.
-        setOnClickListener { editWithKeys() }
+        // Tapping the box brings up the keys, unless they are already up: then the tap only moves the cursor.
+        setOnClickListener { if (generateSequence(parent) { it.parent }.any { it === overlay }) editWithKeys() }
     }
 
     private val overlay = LinearLayout(context).apply {
@@ -109,6 +109,7 @@ class FixDictationPanel(
     fun open(last: LastDictation) {
         dictation = last
         editor.setText(last.insertedText)
+        editor.setSelection(editor.text.length)
         show()
         editWithKeys()
     }
@@ -116,7 +117,11 @@ class FixDictationPanel(
     private fun editWithKeys() {
         if (dictation == null) return
         editor.requestFocus()
+        val start = editor.selectionStart
+        val end = editor.selectionEnd
         openKeys(editor) { show() }
+        // Opening the keys puts the cursor at the end; keep it where the user tapped.
+        if (start >= 0) editor.setSelection(start, end)
     }
 
     private fun show() {

@@ -39,7 +39,7 @@ class QuickCorrectionPanel(
     private enum class Page { KEYS, LAYOUTS, CHARACTERS }
 
     private val context = root.context
-    private val keystrokes = KeystrokeDispatcher { connection() }
+    private val keystrokes = KeystrokeDispatcher { connection() }.apply { editsOwnBox = { instructionEditor != null } }
     private val preferences = context.getSharedPreferences("quick_correction", Context.MODE_PRIVATE)
     private var layout = QuickCorrectionLayouts.initial(
         preferences.getString("layout", null), InterfaceLanguageManager.resolveActive(context)

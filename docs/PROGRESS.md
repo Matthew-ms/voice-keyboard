@@ -9,7 +9,8 @@
 - Phase 1 ✅ 2026-11-02: codebase tour written to `docs/ARCHITECTURE-NOTES.md`.
 
 ## Next
-- Phase 2 (plan approved 2026-11-02), 5 steps: ✅ 1 diff + tests · ✅ 2 JSON storage + tests · ✅ 3 keep raw text for last dictation (checked on phone via log) · ✅ 4 Learning screen (switch, list, delete all; checked on phone) · 5 Fix button + panel.
+- Phase 2 (plan approved 2026-11-02), 5 steps: ✅ 1 diff + tests · ✅ 2 JSON storage + tests · ✅ 3 keep raw text for last dictation (checked on phone via log) · ✅ 4 Learning screen (switch, list, delete all; checked on phone) · 5 Fix button + panel (editing in the box checked on phone 2026-11-02: tap places the cursor, delete works; still to check: Save → correction appears in the Learning list).
+- Fix panel can't type Japanese/Chinese: its letter keys are Latin/Cyrillic/etc. only (upstream on purpose). Next: plan a "Fix in Gboard" button — edit in the real text box with Gboard, switch back, the keyboard reads the box and saves what changed.
 - Collect "before" accuracy examples (what was said vs. typed, per language) to compare against later.
 
 ## Open questions for later phases
@@ -20,4 +21,5 @@
 - Speech came out in Japanese for English speech (2026-11-02). Cause: the Whisper "Prompt (formatting hint)" was upstream's Japanese example sentence (interface language is Japanese), and with Dictation Languages empty Whisper follows the prompt's language. Fix: a custom prompt mixing all four languages, or an empty prompt. `TranscriptionLocale.promptFor` keeps a built-in prompt when no language is set.
 - 5 upstream tests in `HallucinationFilterTest` fail on this PC. Cause: we test on Java 21, upstream CI uses Java 17, and Java 19+ changed regex `\b` to only treat English letters as word letters, so Russian patterns like `\bсубтитр` stop matching. Tests-only: Android uses its own regex engine, so the app on the phone is unaffected. Fix if needed: install JDK 17 and build with it.
 - Some screens still say "Voice Keyboard" (upstream hard-codes it in a few strings). Cosmetic; left alone to keep upstream merges clean.
+- Delete key in the keyboard's own edit boxes did nothing (upstream bug, also in its instruction box): it sent a key press, and Android drops key presses for the keyboard window because that window never has focus (phone log: "Cancelling event (no window focus)"). Fixed 2026-11-02 by deleting through the box's text directly.
 - Leave the in-app "check for updates" off: it would offer the original app's releases.
