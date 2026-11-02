@@ -8,6 +8,7 @@
 - Phase 1 ✅ 2026-11-02: codebase tour written to `docs/ARCHITECTURE-NOTES.md`.
 
 ## Next
+- Check Groq accepts `yue` (Cantonese). If it errors, drop it from the language list and use zh / AUTO.
 - Phase 2 (plan approved 2026-11-02), 5 steps: ✅ 1 diff + tests · ✅ 2 JSON storage + tests · ✅ 3 keep raw text for last dictation (checked on phone via log) · ✅ 4 Learning screen (switch, list, delete all; checked on phone) · 5 Fix button + panel.
 - Collect "before" accuracy examples (what was said vs. typed, per language) to compare against later.
 

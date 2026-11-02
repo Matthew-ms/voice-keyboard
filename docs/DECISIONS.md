@@ -12,3 +12,4 @@ One line per decision and why.
 - 2026-11-02 — Corrections stored in a JSON file (org.json, like upstream), not Room: no new library or build plugin; easy JSON export later.
 - 2026-11-02 — Diff detects scripts with Character.UnicodeScript, not regex script classes: Android (ICU) and the JVM test runner disagree on regex Unicode behaviour (see the \b test failures).
 - 2026-11-02 — Rewrite rule (>50% changed) only applies to dictations of 4+ tokens: short dictations are often fixed whole ("Jon" → "John") and those are the most useful pairs.
+- 2026-11-02 — Dictation languages "auto, en, ja, zh, yue" with an AUTO key position: Whisper picks one language per recording and often guesses wrong on short or mixed sentences, so the user forces a language and returns to AUTO for mixed ones. Whisper prompt is a custom mixed-language sentence (a built-in one pulls output toward its language).
