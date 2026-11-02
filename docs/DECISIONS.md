@@ -9,3 +9,6 @@ One line per decision and why.
 - 2026-11-01 — Learned terms will feed upstream's existing Recognition hints / Local replacements / Post-processing vocabulary rather than a parallel system (to confirm in Phase 2).
 - 2026-11-01 — Diff will tokenize CJK per character, Latin per word: word-level diff can't see changes inside unspaced Japanese/Chinese.
 - 2026-11-02 — Build with Java 21 (~/.jdks/jbr-21.0.11), not Android Studio's Java 25: upstream's Gradle 8.5 only runs on Java ≤21; not upgrading Gradle keeps us identical to upstream.
+- 2026-11-02 — Corrections stored in a JSON file (org.json, like upstream), not Room: no new library or build plugin; easy JSON export later.
+- 2026-11-02 — Diff detects scripts with Character.UnicodeScript, not regex script classes: Android (ICU) and the JVM test runner disagree on regex Unicode behaviour (see the \b test failures).
+- 2026-11-02 — Rewrite rule (>50% changed) only applies to dictations of 4+ tokens: short dictations are often fixed whole ("Jon" → "John") and those are the most useful pairs.

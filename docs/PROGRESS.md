@@ -8,11 +8,11 @@
 - Phase 1 ✅ 2026-11-02: codebase tour written to `docs/ARCHITECTURE-NOTES.md`.
 
 ## Next
-- Phase 2: Fix panel + storage. Short plan first, for approval.
+- Phase 2 (plan approved 2026-11-02), 5 steps: ✅ 1 diff + tests · 2 JSON storage + tests · 3 keep raw text for last dictation · 4 Learning screen (switch, list, delete all) · 5 Fix button + panel.
 - Collect "before" accuracy examples (what was said vs. typed, per language) to compare against later.
 
 ## Open questions for later phases
-- Phase 2: store corrections in a JSON file instead of Room? (Upstream already stores its own data as org.json files; no Room in the project.)
+- Phase 3: CJK segments can be a single character (新 → 原 rather than 新宿 → 原宿); the stored before/after context carries the rest. Decide whether matching needs to widen segments.
 - Confirm: Gboard stays the typing keyboard, this one is for voice only.
 
 ## Known issues
