@@ -65,7 +65,13 @@ class ProcessingQueueDeliveryTest {
             override fun onProcessingPhaseChanged(phase: ProcessingQueue.ProcessingPhase) {}
             override fun onFailedCountChanged(count: Int) {}
             override fun onError(message: String) {}
+            override fun onDictationInserted(rawText: String, insertedText: String, language: String) {
+                if (learningFails) error("learning broke")
+                reported += "$rawText -> $insertedText ($language)"
+            }
         }
+        val reported = ArrayList<String>()
+        var learningFails = false
 
         init { queue.bindListener(listener) }
 
@@ -85,6 +91,24 @@ class ProcessingQueueDeliveryTest {
         f.queue.enqueue(item); runCurrent()
         assertEquals(listOf("first"), f.inserted)
         assertTrue(f.saved.transcripts.value.isEmpty())
+        assertFalse(item.audioFile.exists())
+        assertFalse(f.queue.hasCancellableWork)
+    }
+
+    @Test fun `only a result inserted into its editor is reported for learning`() = runTest {
+        val f = Fixture(this)
+        f.queue.enqueue(f.item("inserted")); runCurrent()
+        f.acceptsInsertion = false
+        f.queue.enqueue(f.item("saved", 2)); runCurrent()
+        assertEquals(listOf("inserted -> inserted (en)"), f.reported)
+    }
+
+    @Test fun `a failing learning callback still releases the recording`() = runTest {
+        val f = Fixture(this)
+        f.learningFails = true
+        val item = f.item("first")
+        f.queue.enqueue(item); runCurrent()
+        assertEquals(listOf("first"), f.inserted)
         assertFalse(item.audioFile.exists())
         assertFalse(f.queue.hasCancellableWork)
     }

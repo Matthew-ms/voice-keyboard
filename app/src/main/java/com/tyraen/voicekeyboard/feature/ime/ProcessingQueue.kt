@@ -93,6 +93,8 @@ class ProcessingQueue internal constructor(
         fun onFailedCountChanged(count: Int)
         fun onError(message: String)
         fun onCancellableWorkChanged(available: Boolean) {}
+        /** [insertedText] reached the editor; [rawText] is what the speech model returned. */
+        fun onDictationInserted(rawText: String, insertedText: String, language: String) {}
     }
 
     companion object {
@@ -478,12 +480,14 @@ class ProcessingQueue internal constructor(
         committingWork.add(item.workId)
         pushCancellableWork()
         try {
-            deliver(item, output)
+            val inserted = deliver(item, output)
             deliveredWork.add(item.workId)
             if (remember) recentContext.remember(item.contextToken, output)
             // Insertion or durable save has succeeded. Finish releasing owned audio even if the
             // UI/process-wide scope is torn down while the parked store switches dispatchers.
             withContext(NonCancellable) { complete(item) }
+            // After complete(): a learning failure must never leave audio to be transcribed twice.
+            if (inserted) runCatching { listener?.onDictationInserted(rawText, output, item.transcriptionConfig.language) }
         } finally {
             committingWork.remove(item.workId)
             pushCancellableWork()
@@ -499,16 +503,18 @@ class ProcessingQueue internal constructor(
     }
 
     /** Inserting cannot suspend; an unavailable/changed editor instead gets a durable result. */
-    private suspend fun deliver(item: QueueItem, text: String) {
+    /** True when the text went into the original editor, false when it was saved for later. */
+    private suspend fun deliver(item: QueueItem, text: String): Boolean {
         val l = listener
         val editorToken = item.editorSessionToken
-        if (editorToken != null && l?.onTextReady(text, item.addTrailingSpace, editorToken) == true) return
+        if (editorToken != null && l?.onTextReady(text, item.addTrailingSpace, editorToken) == true) return true
         // A save failure must propagate: processNext parks the original audio and retries instead
         // of deleting the only copy of a dictation. No system clipboard is changed automatically.
         withContext(NonCancellable) {
             savedTranscriptDelivery(WorkIdentity(item.workId, item.createdAt), text, item.addTrailingSpace)
         }
         DiagnosticLog.record(TAG, "Original editor unavailable — saved transcript for later")
+        return false
     }
 
     /**

@@ -42,7 +42,8 @@ class InputOrchestrator(
     private val onApiKeyNeeded: () -> Unit = {},
     private val onCancellableWorkChanged: (Boolean) -> Unit = {},
     /** The live editor's RAM-only identity, captured when recording starts, not when it finishes. */
-    private val editorSessionToken: () -> Long? = { null }
+    private val editorSessionToken: () -> Long? = { null },
+    private val onDictationInserted: (rawText: String, insertedText: String, language: String) -> Unit = { _, _, _ -> }
 ) {
 
     companion object {
@@ -93,6 +94,8 @@ class InputOrchestrator(
         override fun onFailedCountChanged(count: Int) = this@InputOrchestrator.onFailedCountChanged(count)
         override fun onCancellableWorkChanged(available: Boolean) =
             this@InputOrchestrator.onCancellableWorkChanged(available)
+        override fun onDictationInserted(rawText: String, insertedText: String, language: String) =
+            this@InputOrchestrator.onDictationInserted(rawText, insertedText, language)
         override fun onError(message: String) {
             DiagnosticLog.record(TAG, "Queue error: $message")
         }

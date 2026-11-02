@@ -33,6 +33,7 @@ import com.tyraen.voicekeyboard.core.locale.InterfaceLanguageManager
 import com.tyraen.voicekeyboard.core.locale.TranscriptionLocale
 import com.tyraen.voicekeyboard.core.logging.DiagnosticLog
 import com.tyraen.voicekeyboard.feature.audio.MicrophoneCaptureSession
+import com.tyraen.voicekeyboard.feature.learning.LastDictation
 import com.tyraen.voicekeyboard.feature.setup.MicrophonePermissionActivity
 import com.tyraen.voicekeyboard.feature.setup.SetupActivity
 import java.util.concurrent.atomic.AtomicLong
@@ -75,6 +76,7 @@ class DictationInputMethod : InputMethodService() {
     private var keyboardVisible = false
     private val mainHandler = Handler(Looper.getMainLooper())
     private var lastDictationInserted = false
+    private var lastDictation: LastDictation? = null
     private var savedResultSinceShown = false
     private val returnCheck = Runnable { returnToPreviousKeyboardIfDone() }
     private val switchCheck = Runnable { recoverIfSwitchDidNotHappen() }
@@ -151,7 +153,8 @@ class DictationInputMethod : InputMethodService() {
             onPermissionNeeded = { requestMicPermission() },
             voiceAllowed = { !isVoiceBlocked() },
             onVoiceBlocked = { panel.showPasswordFieldNotice() },
-            onApiKeyNeeded = { openSettings() }
+            onApiKeyNeeded = { openSettings() },
+            onDictationInserted = { raw, inserted, language -> rememberDictation(raw, inserted, language) }
         )
         orchestrator.viewVisible = keyboardVisible
 
@@ -203,6 +206,7 @@ class DictationInputMethod : InputMethodService() {
         if (quickCorrectionPanel?.isInstructionMode == true) quickCorrectionPanel?.hide()
         textActionsPanel?.onEditorChanged()
         lastDictationInserted = false
+        lastDictation = null
         mainHandler.removeCallbacks(returnCheck)
         if (::keystrokes.isInitialized) keystrokes.stopBackspaceRepeat()
         val contextAllowed = info != null &&
@@ -219,6 +223,7 @@ class DictationInputMethod : InputMethodService() {
         if (quickCorrectionPanel?.isInstructionMode == true) quickCorrectionPanel?.hide()
         textActionsPanel?.onEditorChanged()
         lastDictationInserted = false
+        lastDictation = null
         mainHandler.removeCallbacks(returnCheck)
         if (::keystrokes.isInitialized) keystrokes.stopBackspaceRepeat()
         if (::orchestrator.isInitialized) orchestrator.gracefulShutdown()
@@ -349,6 +354,15 @@ class DictationInputMethod : InputMethodService() {
      * The check runs [ReturnToPreviousKeyboard.DELAY_MS] later rather than inside the delivery; each
      * new delivery restarts the wait, so only the last one can trigger it.
      */
+    private fun rememberDictation(raw: String, inserted: String, language: String) {
+        val info = currentInputEditorInfo
+        val session = editorSessionToken
+        if (session == null || !LastDictation.allowedIn(info)) return
+        lastDictation = LastDictation(raw, inserted, language, info.packageName.orEmpty(), session, System.currentTimeMillis())
+        // Lengths only: logs can be shared from settings, so the dictated text stays out of them.
+        DiagnosticLog.record(TAG, "Learning: remembered last dictation (raw ${raw.length}, inserted ${inserted.length} chars)")
+    }
+
     private fun scheduleReturnToPreviousKeyboard(inserted: Boolean) {
         lastDictationInserted = inserted
         postReturnCheck()
