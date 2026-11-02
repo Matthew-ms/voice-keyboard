@@ -150,7 +150,7 @@ Saving both the raw transcript and the cleaned-up text matters. It tells us whet
 ## 7. Working rules
 
 - Small steps. One feature per commit, with clear commit messages. Build and install on my phone after each step so I can test.
-- Put new code in its own package (e.g., `.../learning/`) and keep changes to upstream files minimal. This keeps future upstream updates easy to merge.
+- Put new code in its own package (e.g., `.../learning/`). ~~Keep changes to upstream files minimal~~: dropped 2026-11-03, we no longer merge upstream updates (see DECISIONS.md).
 - New features sit behind settings toggles, **off by default**, until tested.
 - Write unit tests for the diff and scoring logic.
 - If something breaks, explain the cause before fixing it.

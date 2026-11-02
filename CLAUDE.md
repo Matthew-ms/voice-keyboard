@@ -12,5 +12,6 @@ Read before working: `docs/PROGRESS.md` (where we are), `docs/DECISIONS.md` (why
 
 ## Git
 - `origin` = Matthew-ms/voice-keyboard (our fork), `upstream` = rustemar/voice-keyboard.
-- Pull upstream updates: `git fetch upstream && git merge upstream/main`.
-- Keep upstream files changed as little as possible; new code goes in `.../learning/`.
+- Since 2026-11-03 we no longer merge upstream (see DECISIONS.md): change any file freely. The `upstream` remote stays
+  so a specific upstream fix can still be looked at and copied by hand.
+- Learning code still lives in `.../learning/`.
