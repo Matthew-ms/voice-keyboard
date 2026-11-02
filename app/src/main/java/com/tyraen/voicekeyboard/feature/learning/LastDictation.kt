@@ -17,5 +17,16 @@ data class LastDictation(
         fun allowedIn(info: EditorInfo?): Boolean = info != null &&
             !EditorField.isPassword(info.inputType) &&
             info.imeOptions and EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING == 0
+
+        /**
+         * How many characters before the cursor are the dictation (plus the space the keyboard
+         * added after it), or null when the field no longer ends with it there.
+         */
+        fun charsToReplace(beforeCursor: CharSequence?, inserted: String): Int? = when {
+            beforeCursor == null || inserted.isEmpty() -> null
+            beforeCursor.endsWith("$inserted ") -> inserted.length + 1
+            beforeCursor.endsWith(inserted) -> inserted.length
+            else -> null
+        }
     }
 }

@@ -13,4 +13,20 @@
     <string name="learning_delete_confirm" translatable="false">Delete all %1$d saved corrections? This cannot be undone.</string>
     <string name="learning_delete_done" translatable="false">All learning data deleted</string>
     <string name="learning_delete" translatable="false">Delete</string>
+
+    <string name="fix_open" translatable="false">Fix last dictation</string>
+    <string name="fix_close" translatable="false">Close without saving</string>
+    <string name="fix_hint" translatable="false">Correct the text, then tap Save. The keyboard learns from what you changed.</string>
+    <string name="fix_edit" translatable="false">Edit with keys</string>
+    <string name="fix_save" translatable="false">Save</string>
+    <string name="fix_saved_replaced" translatable="false">Fixed and learned</string>
+    <string name="fix_saved_kept" translatable="false">Learned. The text in the field changed, so it was left as it is.</string>
+    <string name="fix_replaced_only" translatable="false">Fixed. Not learned: %1$s</string>
+    <string name="fix_not_replaced" translatable="false">Not learned: %1$s The text in the field was left as it is.</string>
+    <string name="fix_reason_unchanged" translatable="false">nothing changed.</string>
+    <string name="fix_reason_deleted" translatable="false">the text was emptied.</string>
+    <string name="fix_reason_appended" translatable="false">text was only added at the end.</string>
+    <string name="fix_reason_case" translatable="false">only capitals or punctuation changed.</string>
+    <string name="fix_reason_rewrite" translatable="false">more than half was rewritten.</string>
+    <string name="fix_save_failed" translatable="false">Could not save the correction</string>
 </resources>

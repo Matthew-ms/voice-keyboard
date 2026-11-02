@@ -161,6 +161,18 @@
                 android:padding="12dp"
                 android:visibility="gone"
                 android:tint="@color/key_text" />
+
+            <ImageButton
+                android:backgroundTint="@null"
+                android:id="@+id/btnFixDictation"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/control_key_bg"
+                android:src="@drawable/ic_learn_fix"
+                android:contentDescription="@string/fix_open"
+                android:padding="12dp"
+                android:visibility="gone"
+                android:tint="@color/key_text" />
         </LinearLayout>
 
     </LinearLayout>

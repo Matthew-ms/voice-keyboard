@@ -33,7 +33,9 @@ import com.tyraen.voicekeyboard.core.locale.InterfaceLanguageManager
 import com.tyraen.voicekeyboard.core.locale.TranscriptionLocale
 import com.tyraen.voicekeyboard.core.logging.DiagnosticLog
 import com.tyraen.voicekeyboard.feature.audio.MicrophoneCaptureSession
+import com.tyraen.voicekeyboard.feature.learning.FixDictationPanel
 import com.tyraen.voicekeyboard.feature.learning.LastDictation
+import com.tyraen.voicekeyboard.feature.learning.LearningPreferences
 import com.tyraen.voicekeyboard.feature.setup.MicrophonePermissionActivity
 import com.tyraen.voicekeyboard.feature.setup.SetupActivity
 import java.util.concurrent.atomic.AtomicLong
@@ -77,6 +79,13 @@ class DictationInputMethod : InputMethodService() {
     private val mainHandler = Handler(Looper.getMainLooper())
     private var lastDictationInserted = false
     private var lastDictation: LastDictation? = null
+        set(value) {
+            field = value
+            refreshExperimentalControls()
+        }
+    private val learningPreferences by lazy { LearningPreferences(this) }
+    private var fixPanel: FixDictationPanel? = null
+    private var fixButton: View? = null
     private var savedResultSinceShown = false
     private val returnCheck = Runnable { returnToPreviousKeyboardIfDone() }
     private val switchCheck = Runnable { recoverIfSwitchDidNotHappen() }
@@ -90,6 +99,8 @@ class DictationInputMethod : InputMethodService() {
     }
 
     private fun createInputView(): View {
+        fixPanel?.destroy()
+        fixPanel = null
         quickCorrectionPanel?.destroy()
         quickCorrectionPanel = null
         textActionsPanel?.destroy()
@@ -190,6 +201,14 @@ class DictationInputMethod : InputMethodService() {
                 quickCorrectionPanel?.showForInstruction(actions.instructionEditor) { actions.show() }
             }
         }
+        fixPanel = FixDictationPanel(
+            root = view,
+            inputConnection = { currentInputConnection },
+            editorSession = { editorSessionToken },
+            openKeys = { editor, onDone -> quickCorrectionPanel?.showForInstruction(editor, onDone) },
+            onSaved = { lastDictation = null },
+            onNotice = { Toast.makeText(this, it, Toast.LENGTH_LONG).show() }
+        )
         refreshExperimentalControls()
         return view
     }
@@ -206,6 +225,7 @@ class DictationInputMethod : InputMethodService() {
         if (quickCorrectionPanel?.isInstructionMode == true) quickCorrectionPanel?.hide()
         textActionsPanel?.onEditorChanged()
         lastDictationInserted = false
+        fixPanel?.hide()
         lastDictation = null
         mainHandler.removeCallbacks(returnCheck)
         if (::keystrokes.isInitialized) keystrokes.stopBackspaceRepeat()
@@ -223,6 +243,7 @@ class DictationInputMethod : InputMethodService() {
         if (quickCorrectionPanel?.isInstructionMode == true) quickCorrectionPanel?.hide()
         textActionsPanel?.onEditorChanged()
         lastDictationInserted = false
+        fixPanel?.hide()
         lastDictation = null
         mainHandler.removeCallbacks(returnCheck)
         if (::keystrokes.isInitialized) keystrokes.stopBackspaceRepeat()
@@ -461,6 +482,8 @@ class DictationInputMethod : InputMethodService() {
         mainHandler.removeCallbacks(returnCheck)
         mainHandler.removeCallbacks(switchCheck)
         editorSessionToken = null
+        fixPanel?.destroy()
+        fixPanel = null
         quickCorrectionPanel?.destroy()
         quickCorrectionPanel = null
         textActionsPanel?.destroy()
@@ -515,6 +538,18 @@ class DictationInputMethod : InputMethodService() {
                 pendingTranscriptsPanel?.hide()
                 quickCorrectionPanel?.hide()
                 textActionsPanel?.toggle()
+            }
+        }
+        fixButton = view.findViewById<View>(R.id.btnFixDictation).apply {
+            ViewCompat.setTooltipText(this, contentDescription)
+            setOnClickListener {
+                val last = lastDictation?.takeIf { it.editorSession == editorSessionToken } ?: return@setOnClickListener
+                suspendAutomaticReturn()
+                orchestrator.gracefulShutdown()
+                pendingTranscriptsPanel?.hide()
+                textActionsPanel?.hide()
+                quickCorrectionPanel?.hide()
+                fixPanel?.open(last)
             }
         }
 
@@ -658,7 +693,9 @@ class DictationInputMethod : InputMethodService() {
         val actions = advancedPreferences.textActionsEnabled && !isVoiceBlocked()
         quickCorrectionButton?.visibility = if (letters) View.VISIBLE else View.GONE
         textActionsButton?.visibility = if (actions) View.VISIBLE else View.GONE
-        experimentsBar?.visibility = if (letters || actions) View.VISIBLE else View.GONE
+        val fix = lastDictation != null && learningPreferences.enabled && !isVoiceBlocked()
+        fixButton?.visibility = if (fix) View.VISIBLE else View.GONE
+        experimentsBar?.visibility = if (letters || actions || fix) View.VISIBLE else View.GONE
         if (!letters && quickCorrectionPanel?.isInstructionMode != true) quickCorrectionPanel?.hide()
         if (!advancedPreferences.textActionsEnabled) {
             if (quickCorrectionPanel?.isInstructionMode == true) quickCorrectionPanel?.hide()
