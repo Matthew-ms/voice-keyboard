@@ -414,7 +414,7 @@ class InputOrchestrator(
             moveTo(InputPhase.Failed(R.string.error_api_key_missing))
         }
 
-        val language = prefs.effectiveLanguage
+        val language = TranscriptionLocale.apiCode(prefs.effectiveLanguage)
         val config = TranscriptionConfig(
             apiKey = prefs.apiKey,
             endpoint = prefs.endpoint,

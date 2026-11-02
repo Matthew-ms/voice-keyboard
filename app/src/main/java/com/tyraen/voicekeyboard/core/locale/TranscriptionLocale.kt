@@ -68,6 +68,12 @@ object TranscriptionLocale {
 
     fun formatCodes(codes: List<String>): String = codes.joinToString(", ")
 
+    /** "auto" in the language list: a key position that lets Whisper detect the language. */
+    const val AUTO = "auto"
+
+    /** The code sent to the speech API; blank means auto-detect. */
+    fun apiCode(code: String): String = if (code == AUTO) "" else code
+
     /** The code that follows [current] in [codes], wrapping around. Falls back to the first. */
     fun nextCode(codes: List<String>, current: String): String {
         if (codes.isEmpty()) return current

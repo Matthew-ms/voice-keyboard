@@ -585,9 +585,9 @@ class SetupActivity : AppCompatActivity() {
                 apiKey = prefs.apiKey,
                 endpoint = prefs.endpoint,
                 model = prefs.model,
-                language = prefs.effectiveLanguage,
+                language = TranscriptionLocale.apiCode(prefs.effectiveLanguage),
                 prompt = WhisperPromptBuilder.build(
-                    TranscriptionLocale.promptFor(prefs.effectiveLanguage, prefs.prompt), vocabulary
+                    TranscriptionLocale.promptFor(TranscriptionLocale.apiCode(prefs.effectiveLanguage), prefs.prompt), vocabulary
                 )
             )
 

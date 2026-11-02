@@ -7,6 +7,15 @@ import java.util.Locale
 
 class TranscriptionLocaleTest {
 
+    // --- auto ---
+
+    @Test fun `auto in the list is sent as blank so whisper detects the language`() {
+        assertEquals(listOf("auto", "en", "ja"), TranscriptionLocale.parseCodes("Auto, en, ja"))
+        assertEquals("", TranscriptionLocale.apiCode("auto"))
+        assertEquals("ja", TranscriptionLocale.apiCode("ja"))
+        assertEquals("", TranscriptionLocale.apiCode(""))
+    }
+
     // --- parseCodes ---
 
     @Test fun `a single code parses to a one element list`() {
