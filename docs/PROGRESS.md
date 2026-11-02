@@ -11,7 +11,10 @@
 ## Next
 - Phase 2 (plan approved 2026-11-02), 5 steps: ✅ 1 diff + tests · ✅ 2 JSON storage + tests · ✅ 3 keep raw text for last dictation (checked on phone via log) · ✅ 4 Learning screen (switch, list, delete all; checked on phone) · 5 Fix button + panel (editing in the box checked on phone 2026-11-02: tap places the cursor, delete works; still to check: Save → correction appears in the Learning list).
 - Fix panel can't type Japanese/Chinese: its letter keys are Latin/Cyrillic/etc. only (upstream on purpose). Next: plan a "Fix in Gboard" button — edit in the real text box with Gboard, switch back, the keyboard reads the box and saves what changed.
-- Collect "before" accuracy examples (what was said vs. typed, per language) to compare against later.
+- Accuracy test 2026-11-02 (5 Cantonese+English sentences, Samsung Notes):
+  - Whisper alone (AUTO or YUE): always writes formal written Chinese, not colloquial Cantonese; English words inside Cantonese get misheard (midterm → "meat term", "sem會學" → 社會學, 影低相 → 營地相). YUE was worse (stray "7", "1Drive", "Farmid Time").
+  - Plus AI cleanup (Fix on, custom mixed-language prompt, gpt-oss-120b): colloquial Cantonese came back in 2 of 5 sentences, partly in 1; misheard English words not recovered, some translated (project → 項目) or made worse (OneDrive → 運載).
+  - Next idea to test: Whisper prompt written in Hong Kong code-mixed Cantonese, and a "never translate English words" rule.
 
 ## Open questions for later phases
 - Phase 3: CJK segments can be a single character (新 → 原 rather than 新宿 → 原宿); the stored before/after context carries the rest. Decide whether matching needs to widen segments.
