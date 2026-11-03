@@ -13,6 +13,7 @@
 ## Next
 - Redesign of the keyboard and app (decided 2026-11-03 to stop merging upstream): collect wishes → DESIGN.md → plan → small steps. Decide where the Fix button and learning features sit in the new layout.
 - Phase 2 (plan approved 2026-11-02), 5 steps: ✅ 1 diff + tests · ✅ 2 JSON storage + tests · ✅ 3 keep raw text for last dictation (checked on phone via log) · ✅ 4 Learning screen (switch, list, delete all; checked on phone) · 5 Fix button + panel (editing in the box checked on phone 2026-11-02: tap places the cursor, delete works; still to check: Save → correction appears in the Learning list).
+- "Fix in Gboard" (plan approved 2026-11-03), 3 steps: ✅ 1 marker logic (FieldSnapshot) + tests · 2 button, note file, switch to Gboard · 3 on return: pause auto-record, review card Save/Discard, save, back to Gboard.
 - Fix panel can't type Japanese/Chinese: its letter keys are Latin/Cyrillic/etc. only (upstream on purpose). Next: plan a "Fix in Gboard" button — edit in the real text box with Gboard, switch back, the keyboard reads the box and saves what changed.
 - Accuracy test 2026-11-02 (5 Cantonese+English sentences, Samsung Notes):
   - Whisper alone (AUTO or YUE): always writes formal written Chinese, not colloquial Cantonese; English words inside Cantonese get misheard (midterm → "meat term", "sem會學" → 社會學, 影低相 → 營地相). YUE was worse (stray "7", "1Drive", "Farmid Time").
