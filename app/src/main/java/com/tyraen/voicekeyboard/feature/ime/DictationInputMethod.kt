@@ -207,6 +207,7 @@ class DictationInputMethod : InputMethodService() {
             editorSession = { editorSessionToken },
             openKeys = { editor, onDone -> quickCorrectionPanel?.showForInstruction(editor, onDone) },
             onSaved = { lastDictation = null },
+            switchKeyboard = { switchToPreviousKeyboard(hideIfItFails = false) },
             onNotice = { Toast.makeText(this, it, Toast.LENGTH_LONG).show() }
         )
         refreshExperimentalControls()

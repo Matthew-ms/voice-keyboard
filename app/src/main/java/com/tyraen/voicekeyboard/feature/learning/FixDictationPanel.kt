@@ -36,6 +36,8 @@ class FixDictationPanel(
     private val openKeys: (EditText, () -> Unit) -> Unit,
     /** The dictation was saved or replaced; the host drops it so Fix is not offered twice. */
     private val onSaved: () -> Unit,
+    /** Hand the field to the previous keyboard (Gboard); false when Android did not switch. */
+    private val switchKeyboard: () -> Boolean,
     private val onNotice: (String) -> Unit
 ) {
     companion object {
@@ -105,6 +107,7 @@ class FixDictationPanel(
             addView(heard)
             addView(editor, LinearLayout.LayoutParams(-1, -2))
             addView(button(R.string.fix_edit, primary = false) { editWithKeys() })
+            addView(button(R.string.fix_gboard, primary = false) { fixInGboard() })
             addView(button(R.string.fix_save, primary = true) { save() })
         }
         overlay.addView(header, LinearLayout.LayoutParams(-1, -2))
@@ -203,6 +206,39 @@ class FixDictationPanel(
         }
         hide()
         onSaved()
+    }
+
+    /**
+     * The letter keys cannot type Chinese or Japanese: note where the dictation sits and let the
+     * user correct it in the field with Gboard. Coming back here picks the note up again.
+     */
+    private fun fixInGboard() {
+        val last = dictation ?: return
+        val snapshot = if (editorSession() != last.editorSession) null else runCatching {
+            val connection = inputConnection()
+            if (connection == null || !connection.getSelectedText(0).isNullOrEmpty()) null
+            else FieldSnapshot.capture(
+                connection.getTextBeforeCursor(FieldSnapshot.charsBefore(last.insertedText), 0),
+                connection.getTextAfterCursor(FieldSnapshot.CONTEXT, 0),
+                last.insertedText)
+        }.getOrNull()
+        if (snapshot == null) {
+            onNotice(context.getString(R.string.fix_gboard_not_found))
+            return
+        }
+        try {
+            ServiceLocator.pendingFixStore.save(PendingFix(last.rawTranscript, last.language, last.appPackage,
+                snapshot, System.currentTimeMillis()))
+        } catch (e: Exception) {
+            DiagnosticLog.recordFailure(TAG, "Saving the Gboard fix note failed", e)
+            onNotice(context.getString(R.string.fix_save_failed))
+            return
+        }
+        DiagnosticLog.record(TAG, "Fix in Gboard: noted (${snapshot.before.length} + ${snapshot.inserted.length} + ${snapshot.after.length} chars)")
+        hide()
+        onSaved()
+        // The note stays either way: switching by hand works just as well.
+        if (!switchKeyboard()) onNotice(context.getString(R.string.fix_gboard_no_switch))
     }
 
     /** Replace only while the same field still ends, at the cursor, with what was dictated. */

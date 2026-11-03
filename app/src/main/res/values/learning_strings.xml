@@ -29,4 +29,7 @@
     <string name="fix_reason_case" translatable="false">only capitals or punctuation changed.</string>
     <string name="fix_reason_rewrite" translatable="false">more than half was rewritten.</string>
     <string name="fix_save_failed" translatable="false">Could not save the correction</string>
+    <string name="fix_gboard" translatable="false">Fix in Gboard (Chinese, Japanese)</string>
+    <string name="fix_gboard_not_found" translatable="false">The dictation is no longer right before the cursor, so it cannot be fixed in Gboard.</string>
+    <string name="fix_gboard_no_switch" translatable="false">Could not switch automatically. Switch to Gboard with the keyboard button at the bottom right.</string>
 </resources>
