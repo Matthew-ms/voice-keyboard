@@ -17,6 +17,7 @@
 - Accuracy test 2026-11-02 (5 Cantonese+English sentences, Samsung Notes):
   - Whisper alone (AUTO or YUE): always writes formal written Chinese, not colloquial Cantonese; English words inside Cantonese get misheard (midterm → "meat term", "sem會學" → 社會學, 影低相 → 營地相). YUE was worse (stray "7", "1Drive", "Farmid Time").
   - Plus AI cleanup (Fix on, custom mixed-language prompt, gpt-oss-120b): colloquial Cantonese came back in 2 of 5 sentences, partly in 1; misheard English words not recovered, some translated (project → 項目) or made worse (OneDrive → 運載).
+  - 2026-11-03: added a guard in code (ScriptGuard): a cleanup result that loses over half of the English letters, kana or Chinese characters is thrown away and Whisper's text is typed instead. Fix panel now shows "Speech model heard:". Phone test: guard never fired in 4 dictations; the user saw the wrong language already in what Whisper heard, so Whisper is the source.
   - Next idea to test: Whisper prompt written in Hong Kong code-mixed Cantonese, and a "never translate English words" rule.
 
 ## Open questions for later phases

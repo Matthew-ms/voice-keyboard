@@ -10,6 +10,7 @@ import com.tyraen.voicekeyboard.feature.postprocessing.PostProcessingArtifactStr
 import com.tyraen.voicekeyboard.feature.postprocessing.PostProcessingClient
 import com.tyraen.voicekeyboard.feature.postprocessing.PostProcessingPrompts
 import com.tyraen.voicekeyboard.feature.postprocessing.RecentDictationContext
+import com.tyraen.voicekeyboard.feature.postprocessing.ScriptGuard
 import com.tyraen.voicekeyboard.feature.transcription.SpeechToTextClient
 import com.tyraen.voicekeyboard.feature.transcription.TranscriptionConfig
 import com.tyraen.voicekeyboard.feature.vocabulary.TextDictionary
@@ -667,6 +668,7 @@ class ProcessingQueue internal constructor(
         // First: fix/shorten/emoji
         if (PostProcessingPrompts.hasAnyMode(item.ppFix, item.ppShorten, item.ppEmoji)) {
             DiagnosticLog.record(TAG, "Post-processing: fix=${item.ppFix}, shorten=${item.ppShorten}, emoji=${item.ppEmoji}")
+            val input = processed
             val promptParts = PostProcessingPrompts.build(item.ppFix, item.ppShorten, item.ppEmoji, processed, pp, referenceVocabulary, context())
             val result = processText(promptParts, pp, null)
             checkActive(item)
@@ -676,6 +678,11 @@ class ProcessingQueue internal constructor(
                 processed
             }
             processed = PostProcessingArtifactStripper.strip(processed)
+            // Shorten may legitimately drop most words; a blank result is handled by the caller.
+            if (!item.ppShorten && processed.isNotBlank() && !ScriptGuard.keepsScripts(input, processed)) {
+                DiagnosticLog.record(TAG, "Post-processing changed the language, using raw text")
+                processed = input
+            }
         }
 
         // Then: rhyme

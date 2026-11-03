@@ -63,6 +63,11 @@ class FixDictationPanel(
         setOnClickListener { if (generateSequence(parent) { it.parent }.any { it === overlay }) editWithKeys() }
     }
 
+    // What the speech model heard before cleanup, so a change of language can be traced to its step.
+    private val heard = text("", 13f).apply {
+        setTextColor(ContextCompat.getColor(context, R.color.status_text))
+    }
+
     private val overlay = LinearLayout(context).apply {
         orientation = LinearLayout.VERTICAL
         setBackgroundColor(ContextCompat.getColor(context, R.color.keyboard_bg))
@@ -97,6 +102,7 @@ class FixDictationPanel(
             addView(text(context.getString(R.string.fix_hint), 13f).apply {
                 setTextColor(ContextCompat.getColor(context, R.color.status_text))
             })
+            addView(heard)
             addView(editor, LinearLayout.LayoutParams(-1, -2))
             addView(button(R.string.fix_edit, primary = false) { editWithKeys() })
             addView(button(R.string.fix_save, primary = true) { save() })
@@ -109,6 +115,8 @@ class FixDictationPanel(
     fun open(last: LastDictation) {
         dictation = last
         editor.setText(last.insertedText)
+        heard.text = context.getString(R.string.learning_speech_heard, last.rawTranscript)
+        heard.visibility = if (last.rawTranscript != last.insertedText) View.VISIBLE else View.GONE
         editor.setSelection(editor.text.length)
         show()
         editWithKeys()
