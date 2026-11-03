@@ -8,6 +8,8 @@
 
 - Phase 1 ✅ 2026-11-02: codebase tour written to `docs/ARCHITECTURE-NOTES.md`.
 
+- 2026-11-03: switching set up without code: Auto-start recording + Return to previous keyboard on. Route that works: long-press Gboard's space bar → My Voice Keyboard (records at once) → stop → text typed → Gboard back by itself (checked in log). Gboard's globe key only cycles Gboard's own languages.
+
 ## Next
 - Redesign of the keyboard and app (decided 2026-11-03 to stop merging upstream): collect wishes → DESIGN.md → plan → small steps. Decide where the Fix button and learning features sit in the new layout.
 - Phase 2 (plan approved 2026-11-02), 5 steps: ✅ 1 diff + tests · ✅ 2 JSON storage + tests · ✅ 3 keep raw text for last dictation (checked on phone via log) · ✅ 4 Learning screen (switch, list, delete all; checked on phone) · 5 Fix button + panel (editing in the box checked on phone 2026-11-02: tap places the cursor, delete works; still to check: Save → correction appears in the Learning list).
